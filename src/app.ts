@@ -14,11 +14,11 @@ const pgConfig: ConnectionConfig = {
 const pgClient = new PostgresClient(pgConfig)
 await pgClient.connect()
 
-app.get('/short-stories/titles', async (req, res) => {
+app.get('/writings/titles', async (_, res, next) => {
 	const dbRes = await pgClient.query(`
-		select title from short_story
-		join story_availability on short_story.story_id=story_availability.story_id
-		where access_level='public';`
+		SELECT title FROM writing
+		JOIN writing_access ON writing.writing_id=writing_access.writing_id
+		WHERE access_level='public';`
 	)
 	const titles = dbRes.rows.map( (row) => row.title! )
 	res.setHeader('Content-Type', 'application/json');
