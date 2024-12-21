@@ -21,8 +21,22 @@ app.get('/writings/titles', async (_, res, next) => {
 		WHERE access_level='public';`
 	)
 	const titles = dbRes.rows.map( (row) => row.title! )
-	res.setHeader('Content-Type', 'application/json');
+	res.setHeader('Content-Type', 'application/json')
 	res.send(JSON.stringify(titles))
+})
+
+app.get('/writings/:title', async (req, res) => {
+	// pg handles sanitizations for us!
+	// https://github.com/brianc/node-postgres/wiki/FAQ#8-does-node-postgres-handle-sql-injection
+	const dbRes = await pgClient.query('SELECT text FROM writing WHERE title = $1', [req.params["title"]])
+	if (dbRes.rows.length == 0) {
+		res.status(404)
+		res.send()
+		return
+	}
+	// TODO: Add page breaks
+	res.setHeader('Content-Type', 'text/plain')
+	res.send(dbRes.rows[0].text)
 })
 
 app.listen(8080)
