@@ -1,6 +1,9 @@
 import express from "express"
-import pg, {ConnectionConfig} from 'pg'
-import 'dotenv/config'
+import pg, {ConnectionConfig, Query} from 'pg'
+import dotenvx from "@dotenvx/dotenvx"
+// TODO: Fix this. The "-f" option in dotenvx SHOULD be pointing to the correct environment.
+// Need to figure out why it isn't.
+dotenvx.config({path: `.env.local`})
 
 const app = express()
 const PostgresClient = pg.Client
